@@ -1,6 +1,6 @@
 {
   "name": "@phoobynet/vuex-helper",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Vuex helper for people who like namespaced modules",
   "main": "src/index.js",
   "scripts": {
