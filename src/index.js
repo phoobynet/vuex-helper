@@ -4,7 +4,7 @@ import composeActions from './composers/composeActions'
 import composeMutations from './composers/composeMutations'
 import composeGetters from './composers/composeGetters'
 
-export default {
+export {
   buildModule,
   compose,
   composeActions,

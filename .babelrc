@@ -3,20 +3,10 @@
     "@babel/plugin-proposal-object-rest-spread"
   ],
   "presets": [
-    "@babel/preset-env"
-  ],
-  "env": {
-    "test": {
-      "presets": [
-        [
-          "@babel/env",
-          {
-            "targets": {
-              "node": "current"
-            }
-          }
-        ]
-      ]
-    }
-  }
+    [
+      "@babel/preset-env",
+      {
+      }
+    ]
+  ]
 }

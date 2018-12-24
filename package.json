@@ -1,10 +1,9 @@
 {
   "name": "@phoobynet/vuex-helper",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "Vuex helper for people who like namespaced modules",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -15,6 +14,7 @@
     "module",
     "helper"
   ],
+  "browserslist": "> 0.25%, not dead",
   "author": "phoobynet",
   "license": "ISC",
   "bugs": {
@@ -28,6 +28,7 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
     "@babel/preset-env": "^7.2.3",
