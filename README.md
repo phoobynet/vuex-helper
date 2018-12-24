@@ -38,7 +38,7 @@ The following is a very simple module with no actions or getters.
 
 #### fooModule.js
 ```javascript
-import { buildModule } from '@phooby/vuex-helper'
+import { buildModule } from '@phoobynet/vuex-helper'
 
 const state = {
   fetching: false,
@@ -113,7 +113,7 @@ import {
   composeActions, 
   composeMutations, 
   composeGetters 
-} from '@phooby/vuex-helper'
+} from '@phoobynet/vuex-helper'
 import axios from 'axios'
 
 const state = {
