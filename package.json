@@ -1,0 +1,41 @@
+{
+  "name": "@phoobynet/vuex-helper",
+  "version": "1.0.0",
+  "description": "Vuex helper for people who like namespaced modules",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phoobynet/vuex-helper.git"
+  },
+  "keywords": [
+    "vuex",
+    "module",
+    "helper"
+  ],
+  "author": "phoobynet",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/phoobynet/vuex-helper/issues",
+    "email": "phoobynet@users.noreply.github.com"
+  },
+  "homepage": "https://github.com/phoobynet/vuex-helper#readme",
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "vue": "^2.5.21",
+    "vuex": "^3.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/preset-env": "^7.2.3",
+    "eslint": "^5.11.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^8.0.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0"
+  }
+}
