@@ -62,7 +62,8 @@ import { buildModule } from '@phoobynet/vuex-helper'
 
 const state = {
   fetching: false,
-  items: []
+  customers: [],
+  error: null
 }
 
 // create the module based on the above state
@@ -90,7 +91,7 @@ export default store
 
 ```
 
-`buildModule` takes the module name, and the `state` and returns a `customersModule` with the following properties.
+`buildModule` takes the namespace, and the `state` and returns a `customersModule` with the following properties.
 
 * `state` - the state passed into `buildModule`
 * `namespace` - the `namespace` argument passed into `buildModule`

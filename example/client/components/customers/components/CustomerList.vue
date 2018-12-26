@@ -22,12 +22,6 @@
       <th>
         Job title
       </th>
-      <th>
-        Phone
-      </th>
-      <th>
-        Email
-      </th>
       <th></th>
     </tr>
     </thead>
@@ -50,12 +44,6 @@
       </td>
       <td>
         {{ customer.jobTitle }}
-      </td>
-      <td>
-        {{ customer.phone }}
-      </td>
-      <td>
-        {{ customer.email }}
       </td>
       <td>
         <button
