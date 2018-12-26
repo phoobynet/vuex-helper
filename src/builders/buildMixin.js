@@ -2,7 +2,7 @@ import { mapState, mapMutations } from 'vuex'
 
 /**
  * @typedef {Object} BuildMixinArgs
- * @property {String} moduleName - the module name as defined on store creation
+ * @property {String} namespace - the namespace name as defined on store creation
  * @property {Array} stateKeys - array of state keys derived from the initial state object
  * @property {Object} mutationSettersMap - object that provides mapping from mutation function names that cannot be mixed in due to collisions to no colliding names, e.g. 'setFetching' maps to 'fetching'
  */
@@ -18,13 +18,13 @@ import { mapState, mapMutations } from 'vuex'
  * @param {BuildMixinArgs}
  * @returns {Mixin}
  */
-export default function buildMixin ({ moduleName, stateKeys, mutationSettersMap }) {
+export default function buildMixin ({ namespace, stateKeys, mutationSettersMap }) {
   return {
     computed: {
-      ...mapState(moduleName, stateKeys)
+      ...mapState(namespace, stateKeys)
     },
     methods: {
-      ...mapMutations(moduleName, mutationSettersMap)
+      ...mapMutations(namespace, mutationSettersMap)
     }
   }
 }

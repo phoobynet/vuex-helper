@@ -17,7 +17,7 @@ export default function composeGetters (getters) {
         ...moduleObject.mixin,
         computed: {
           ...moduleObject.mixin.computed,
-          ...mapGetters(moduleObject.moduleName, gettersKeys)
+          ...mapGetters(moduleObject.namespace, gettersKeys)
         }
       }
     }

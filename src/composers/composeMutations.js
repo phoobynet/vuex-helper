@@ -17,7 +17,7 @@ export default function composeMutations (customMutations) {
         ...moduleObject.mixin,
         methods: {
           ...moduleObject.mixin.methods,
-          ...mapMutations(moduleObject.moduleName, Object.keys(customMutations))
+          ...mapMutations(moduleObject.namespace, Object.keys(customMutations))
         }
       }
     }

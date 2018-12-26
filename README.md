@@ -1,10 +1,8 @@
 # WORK IN PROGRESS - DANGER HERE!
 
-I don't recommend using this at the moment.  It needs some tests, documentation, examples and possibly even some type definition files.
-
 # Vuex Helper
 
-Creates namespaced Vuex modules based on a given state object.
+Creates namespaced Vuex modules based on a given state object with less coding.
 
 ### Installation
 
@@ -22,12 +20,12 @@ yarn add @phoobynet/vuex-helper
 
 ## Motivation
 
-I built this as a time saver.  I was writing a Vue.js application for a large legacy CRM and Life & Pensions system and was getting a lot of change requests that had become a chore.  I wanted a simple way of adding data to state within a module, and not have to worry about add new types, mutations and mappings to components.
+I built this as a time saver.  I was writing a Vue.js application for a large legacy CRM system and was getting a lot of change requests that had become a chore.  I wanted a simple way of adding data to state within a module, and not have to worry about add new types, mutations and mappings to components.
 
 ## Conventions (that I use)
 
 * Vuex modules are always namespaced.
-* Vuex module file names end with `Module.js`, but module names don't, e.g. 'fooModule.js' is registered with the store as 'foo'
+* Vuex module file names end with `Module.js`, but module names don't, e.g. 'customersModule.js' is registered with the store as 'customers'
 * Vuex modules are kept smallish.
 * Each value of `state` has a matching `type`
 * Each `type` has a matching mutation function that has the same name as the `type` and therefore the `state` property.
@@ -36,7 +34,29 @@ I built this as a time saver.  I was writing a Vue.js application for a large le
 
 The following is a very simple module with no actions or getters.
 
-#### fooModule.js
+To run the example:
+
+Open a terminal and start the server
+
+```bash
+npm run run-example-server
+```
+
+Open another terminal and start the client
+
+```bash
+npm run run-example-client
+```
+
+Navigate to [localhost:3001](http://localhost:3001)
+
+You should see something similar to this:
+
+![customers_screenshot.png](customers_screenshot.png)
+
+
+
+#### customersModule.js (simplified version)
 ```javascript
 import { buildModule } from '@phoobynet/vuex-helper'
 
@@ -46,23 +66,23 @@ const state = {
 }
 
 // create the module based on the above state
-const fooModule = buildModule('foo', state)
+const customersModule = buildModule('customers', state)
 
-export default fooModule
+export default customersModule
 ```
 
 #### store.js
 ```javascript
 import Vue from 'vue'
 import Vuex from 'vuex'
-import foo from '@/components/foo/fooModule'
+import customers from '@/components/customers/customersModule'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   strict: true,
   modules: {
-    foo
+    customers
   }
 })
 
@@ -70,10 +90,10 @@ export default store
 
 ```
 
-`buildModule` takes the module name, and the `state` and returns a `fooModule` with the following properties.
+`buildModule` takes the module name, and the `state` and returns a `customersModule` with the following properties.
 
 * `state` - the state passed into `buildModule`
-* `moduleName` - the `moduleName` argument passed into `buildModule`
+* `namespace` - the `namespace` argument passed into `buildModule`
 * `namespaced` - set to `true`.  See [Vuex Namespacing](https://vuex.vuejs.org/guide/modules.html#namespacing)
 * `stateKeys` - array of keys obtained from the `state` objects.  Useful for creating mixins.
 * `defaultState` - copy of `state` that can be used to set a state property back to the original value.
@@ -87,7 +107,7 @@ export default store
 ```
 {
     state,
-    moduleName,
+    namespace,
     namespaced,
     stateKeys,
     defaultState,
@@ -101,73 +121,87 @@ export default store
 
 ### Composing `actions`, `getters` and custom `mutations`
 
-Our `fooModule` in the previous example is pretty dumb.  Let's add the following:
+Our `customersModule` in the previous example is pretty dumb.  Let's add the following:
 
 * An action to retrieve the `items`
 * A getter that can tell us the number of `items` currently in state
 * A custom or override mutation - remember, vuex-helper will create default mutation functions for each `state` property, but they can be overridden.  **NOTE: the `mutationSettersMap` is not updated.**
 
+#### customersModule.js (more advanced version)
 ```javascript
-import { 
-  buildModule, 
-  composeActions, 
-  composeMutations, 
-  composeGetters 
+import {
+  buildModule,
+  compose,
+  composeActions,
+  composeGetters,
+  composeMutations
 } from '@phoobynet/vuex-helper'
-import axios from 'axios'
+import customersApi from './customersApi'
 
 const state = {
+  customers: [],
   fetching: false,
-  items: []
+  error: null
 }
 
-// create the module based on the above state
-const { types, resetState, ...fooModule } = buildModule('foo', state)
+const { types, resetState, ...customersModule } = buildModule('customers', state)
 
 const getters = {
-  itemCount (state) {
-    return state.items.length
-  } 
-}
+  hasCustomers (state) {
+    return state.customers.length
+  },
 
-const actions = {
-   async cleanUp({ commit }) {
-     resetState(commit)
-   },
-   
-   async getItems ({ commit }) {
-      commit(types.fetching, true)
-      
-      try {
-        const response = await axios.get('http://items')
-        commit(types.items, response.data)
-      }
-      catch (err) {
-        console.error(err)
-      }
-      finally {	
-        commit(types.fetching, false)
-      }
-    }
+  hasError (state) {
+    return !!state.error
+  }
 }
 
 const customMutations = {
-  appendItem (state, newItem) {
-    state.items = [ ...items, newItem ]
+  clearLastError (state) {
+    state.error = null
+  },
+
+  removeCustomer (state, id) {
+    state.customers = state.customers.filter(customer => customer.id + '' !== id + '')
+  }
+}
+
+const actions = {
+  cleanUp ({ commit }) {
+    resetState(commit)
+  },
+
+  async getCustomers ({ commit }) {
+    try {
+      commit(types.fetching, true)
+      commit(types.customers, [])
+      commit(types.error, null)
+
+      const customers = await customersApi.getCustomers()
+
+      commit(types.customers, customers)
+    } catch (err) {
+      commit(types.error, err)
+      console.error(err)
+    } finally {
+      commit(types.fetching, false)
+    }
   }
 }
 
 export default compose(
-  composeActions(actions), 
+  composeActions(actions),
   composeGetters(getters),
-  composeMutations(customMutations))(fooModule)
+  composeMutations(customMutations)
+)(customersModule)
+
 ```
-To pull actions, getters and custom mutations into our `fooModule`, we compose them.
+To pull actions, getters and custom mutations into our `customersModule`, we compose them.
 
 * `composeActions` adds the `actions` object to the module, along with a `actionsKeys` array.  The default `mixin.methods` is updated using `mapActions`.
 * `composeGetters` adds the `getters` object to the module, along with a `gettersKeys` array.  The default `mixin.computed` is updated using `mapGetters`
 * `composeMutation` overwrites default mutations or adds additional mutations to the module. The default `mixin.methods` is updated using `mapMutations`
-* `compose` accepts `n` compose functions, returning a function that is executed with the result of `buildModule` (`fooModule` in this example)
+* `compose` accepts `n` compose functions, returning a function that is executed with the result of `buildModule` (`customersModule` in this example)
 
 
 
@@ -176,18 +210,18 @@ To pull actions, getters and custom mutations into our `fooModule`, we compose t
 Calling mutation functions the same name as a state property would cause problems when mapping values and methods onto a component.  Instead, when not using the generated `<module>.mixin`, do the following:
 
 ```javascript
-import fooModule from './fooModule'
+import customersModule from './customersModule'
 import { createNamespacedHelpers } from 'vuex'
 
-const { mapMutations, mapState } = createNamespacedHelpers(fooModule.moduleName)
+const { mapMutations, mapState } = createNamespacedHelpers(customersModule.namespace)
 
 export default {
-  name: 'Items',
+  name: 'Customers',
   computed: {
-    ...mapState(fooModule.stateKeys)
+    ...mapState(customersModule.stateKeys)
   },
   methods: {
-    ...mapMutations(fooModule.mutationSettersMap),
+    ...mapMutations(customersModule.mutationSettersMap),
     
     doSomething () {
       // maps to the mutation 'fetching'
@@ -201,36 +235,83 @@ export default {
 
 Dead simple, just import the module, and use the `mixin` property.
 
-```vue
+```vuejs
 <template>
-  <div>
+  <div class="mt-2">
     <template v-if="fetching">
-      <p>Please wait...</p>
+      <div class="row">
+        <div class="col">
+          <div class="text-center mt-5">
+            <i class="fa fa-spinner fa-spin fa-3x"></i>
+          </div>
+        </div>
+      </div>
     </template>
-    <template v-else-if="itemCount === 0">
-      <p>No items found</p>
+    <template v-else-if="hasCustomers">
+      <div class="row">
+        <div class="col">
+          <header>
+            <h1>Customers</h1>
+          </header>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <customer-list
+            @removeCustomer="onRemoveCustomer"
+            :customers="customers"
+          />
+        </div>
+      </div>
     </template>
-    <template v-else>
-      <ul>
-        <li v-for="item in items">
-          {{ item.name }}
-        </li>
-      </ul>
+    <template v-else-if="hasError">
+      <pre>{{ JSON.stringify(error, null, 2) }}</pre>
+      <button
+        class="btn btn-warning btn-sm"
+        @click="clearLastError"
+      >Clear last error
+      </button>
+    </template>
+    <template v-else-if="!hasCustomers">
+      <div class="text-center">
+        <p class="text-muted">
+          No customers here.
+        </p>
+        <button
+          class="btn btn-primary btn-sm text-justify"
+          @click="refreshCustomers"
+        >Refresh customers
+        </button>
+      </div>
     </template>
   </div>
 </template>
 
 <script>
-import fooModule from './fooModule'
+import CustomerList from './components/CustomerList'
+import customersModule from './customersModule'
 
 export default {
-  name: 'Items',
-  mixins: [fooModule.mixin],
+  name: 'Customers',
+  components: {
+    CustomerList
+  },
+  mixins: [ customersModule.mixin ],
   mounted () {
-    this.getItems()
+    this.getCustomers()
   },
   beforeDestroy () {
     this.cleanUp()
+  },
+  methods: {
+    refreshCustomers () {
+      this.getCustomers()
+    },
+    onRemoveCustomer (id) {
+      // custom mutation
+      this.removeCustomer(id)
+    }
   }
 }
 </script>

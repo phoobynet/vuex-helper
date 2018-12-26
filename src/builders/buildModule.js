@@ -7,22 +7,22 @@ import buildMixin from './buildMixin'
 import isString from 'lodash/isString'
 import isObjectLike from 'lodash/isObjectLike'
 
-const moduleNames = []
+const namespaces = []
 
-export default function buildModule (moduleName, state) {
-  if (!isString(moduleName)) {
-    throw TypeError('moduleName must be a string')
+export default function buildModule (namespace, state) {
+  if (!isString(namespace)) {
+    throw TypeError('namespace must be a string')
   }
 
-  if (moduleNames.includes(moduleName)) {
-    throw Error(`Module called ${moduleName} already exists in this application`)
+  if (namespaces.includes(namespace)) {
+    throw Error(`Module called ${namespace} already exists in this application`)
   }
 
   if (!isObjectLike(state)) {
     throw TypeError('buildModule state argument invalid')
   }
 
-  moduleNames.push(moduleName)
+  namespaces.push(namespace)
   const stateKeys = Object.keys(state)
   const defaultState = { ...state }
   const namespaced = true
@@ -30,11 +30,11 @@ export default function buildModule (moduleName, state) {
   const mutations = buildMutations({ stateKeys, defaultState })
   const mutationSettersMap = buildMutationSettersMap(stateKeys)
   const resetState = buildStateResetter({ stateKeys, defaultState })
-  const mixin = buildMixin({ stateKeys, moduleName, mutationSettersMap })
+  const mixin = buildMixin({ stateKeys, namespace, mutationSettersMap })
 
   return {
     state,
-    moduleName,
+    namespace,
     namespaced,
     stateKeys,
     defaultState,

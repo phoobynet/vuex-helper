@@ -22,7 +22,7 @@ export default function composeActions (actions) {
         ...moduleObject.mixin,
         methods: {
           ...moduleObject.mixin.methods,
-          ...mapActions(moduleObject.moduleName, actionsKeys)
+          ...mapActions(moduleObject.namespace, actionsKeys)
         }
       }
     }
