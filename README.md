@@ -123,9 +123,9 @@ export default store
 
 Our `customersModule` in the previous example is pretty dumb.  Let's add the following:
 
-* An action to retrieve the `items`
-* A getter that can tell us the number of `items` currently in state
-* A custom or override mutation - remember, vuex-helper will create default mutation functions for each `state` property, but they can be overridden.  **NOTE: the `mutationSettersMap` is not updated.**
+* An action to retrieve `customers`
+* Add a couple of getters to determine if we actually have any customers and if a error is set (yes, I know, this is contrived and could be achieved in state)
+* A custom or override mutation; in this case one to clear an error and the other to a remove a customer.  Remember, vuex-helper will create default mutation functions for each `state` property, but they can be overridden.  **NOTE: the `mutationSettersMap` is not updated.**
 
 #### customersModule.js (more advanced version)
 ```javascript
@@ -235,7 +235,7 @@ export default {
 
 Dead simple, just import the module, and use the `mixin` property.
 
-```vuejs
+```html
 <template>
   <div class="mt-2">
     <template v-if="fetching">
