@@ -8,12 +8,11 @@ import buildMutationName from './buildMutationName'
  * @returns {*}
  */
 export default function buildMutationSettersMap (stateKeys) {
-  return stateKeys.reduce(reducer, {})
+  const mutationSettersMap = {}
 
-  function reducer (mutationSetters, stateKey) {
-    return {
-      ...mutationSetters,
-      [buildMutationName(stateKey)]: stateKey
-    }
+  for (const stateKey of stateKeys) {
+    mutationSettersMap[buildMutationName(stateKey)] = stateKey
   }
+
+  return Object.freeze(mutationSettersMap)
 }

@@ -16,5 +16,5 @@ export default function buildMutationName (stateKey) {
     throw Error('stateKey argument was an empty string')
   }
 
-  return `set${cleanStateKey.charAt(0).toUpperCase()}${cleanStateKey.substring(1)}`
+  return `set${ cleanStateKey.charAt(0).toUpperCase() }${ cleanStateKey.substring(1) }`
 }
