@@ -17,15 +17,15 @@ export default function buildModule (namespace, state) {
     throw TypeError('namespace cannot be an empty string')
   }
 
-  if (builtModules.isModuleDuplicated(namespace)) {
+  if (builtModules.has(namespace)) {
     throw Error(`Module called ${ namespace } already exists in this application`)
   }
 
   if (!isObjectLike(state)) {
-    throw TypeError('buildModule state argument invalid')
+    throw TypeError('state argument invalid')
   }
 
-  builtModules.addModule(namespace)
+  builtModules.add(namespace)
 
   const stateKeys = Object.keys(state)
   const defaultState = { ...state }

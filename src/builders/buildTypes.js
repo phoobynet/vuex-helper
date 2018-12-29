@@ -6,9 +6,9 @@
 export default function buildTypes (stateKeys) {
   const types = {}
 
-  for (const stateKey of stateKeys) {
+  stateKeys.forEach(stateKey => (
     types[stateKey] = stateKey
-  }
+  ))
 
   return new Proxy(types, {
     get (typeObject, prop) {

@@ -1,76 +1,105 @@
 import buildModule from '../../src/builders/buildModule'
 import builtModules from '../../src/builders/builtModules'
+import buildTypes from '../../src/builders/buildTypes'
 
 jest.mock('../../src/builders/builtModules')
+jest.mock('../../src/builders/buildTypes')
 
-describe('buildModule', () => {
-  let state, fooModule, mockIsModuleDuplicated, mockAddModule
-
-  describe('module integration test', () => {
-    beforeEach(() => {
-      mockIsModuleDuplicated = builtModules.isModuleDuplicated.mockReturnValue(false)
-      mockAddModule = builtModules.addModule.mockImplementation((n) => {
-      })
-    })
-
-    afterEach(() => {
-      mockIsModuleDuplicated.mockClear()
-      mockAddModule.mockClear()
-    })
-
-    describe('validation', () => {
-      test('expect error when namespace is not a string', () => {
+describe('buildModule suite', () => {
+  let state, mockHas, mockAdd, mockBuildTypes
+  describe('buildModule args', () => {
+    describe('namespace type', () => {
+      beforeEach(() => {
+        mockHas = builtModules.has.mockReturnValue(false)
         state = {
-          foo: null
+          foo: ''
         }
+      })
 
-        const namespace = 1
-
+      test('must be a string', () => {
         expect(() => {
-          fooModule = buildModule(namespace, state)
+          buildModule(1, state)
         }).toThrow('namespace must be a string')
       })
 
-      test('expect error when namespace is an empty string', () => {
-        state = {
-          foo: null
-        }
-
-        const namespace = ''
-
+      test('must not be an empty string', () => {
         expect(() => {
-          fooModule = buildModule(namespace, state)
+          buildModule('   ', state)
         }).toThrow('namespace cannot be an empty string')
       })
-
-      test('expect call to check if namespace is already in use', () => {
-        state = {
-          foo: null
-        }
-
-        const namespace = 'foo'
-
-        fooModule = buildModule(namespace, state)
-
-        expect(mockIsModuleDuplicated.mock.calls.length).toEqual(1)
-      })
     })
 
-    describe('result tests', () => {
+    describe('namespace registration', () => {
       beforeEach(() => {
+        mockHas = builtModules.has.mockReturnValue(true)
         state = {
-          foo: null
+          foo: ''
         }
-
-        fooModule = buildModule('foo', state)
-      })
-      test('expect foo.state to equal state arg', () => {
-        expect(fooModule.state).toEqual(state)
       })
 
-      test('expect foo.namespace to equal the namespace arg', () => {
-        expect(fooModule.namespace).toEqual('foo')
+      test('must not have already been registered', () => {
+        expect(() => {
+          buildModule('foo', state)
+        }).toThrow('Module called foo already exists in this application')
       })
     })
+
+    describe('state arg', () => {
+      beforeEach(() => {
+        mockHas = builtModules.has.mockReturnValue(false)
+        state = 'fail'
+      })
+
+      test('must be an object', () => {
+        expect(() => {
+          buildModule('foo', state)
+        }).toThrow('state argument invalid')
+      })
+    })
+  })
+
+  describe('buildModule should add namespace to builtModules', () => {
+    beforeEach(() => {
+      mockHas = builtModules.has.mockReturnValue(false)
+      mockAdd = builtModules.add.mockImplementation()
+      state = {
+        foo: null
+      }
+    })
+
+    test('test', () => {
+      buildModule('foo', state)
+      expect(mockAdd.mock.calls[0][0]).toEqual('foo')
+      expect(mockAdd.mock.calls.length).toBe(1)
+    })
+  })
+
+  describe('buildModule should call buildTypes', () => {
+    beforeEach(() => {
+      mockHas = builtModules.has.mockReturnValue(false)
+      mockBuildTypes = buildTypes.mockImplementation((value) => {
+        console.log(value)
+      })
+      state = {
+        foo: null
+      }
+    })
+
+    test('test', () => {
+      buildModule('foo', state)
+
+      expect(mockBuildTypes.mock.calls.length).toBe(1)
+    })
+  })
+
+  afterEach(() => {
+    if (mockHas) {
+      mockHas.mockClear()
+    }
+
+    if (mockBuildTypes) {
+      mockBuildTypes.mockClear()
+    }
+    state = {}
   })
 })
