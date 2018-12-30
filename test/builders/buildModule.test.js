@@ -7,6 +7,19 @@ jest.mock('../../src/builders/buildTypes')
 
 describe('buildModule suite', () => {
   let state, mockHas, mockAdd, mockBuildTypes
+  beforeEach(() => {
+    mockBuildTypes = buildTypes.mockImplementation()
+  })
+
+  afterEach(() => {
+    if (mockHas) {
+      mockHas.mockClear()
+    }
+
+    mockBuildTypes.mockClear()
+    state = {}
+  })
+
   describe('buildModule args', () => {
     describe('namespace type', () => {
       beforeEach(() => {
@@ -77,9 +90,6 @@ describe('buildModule suite', () => {
   describe('buildModule should call buildTypes', () => {
     beforeEach(() => {
       mockHas = builtModules.has.mockReturnValue(false)
-      mockBuildTypes = buildTypes.mockImplementation((value) => {
-        console.log(value)
-      })
       state = {
         foo: null
       }
@@ -88,18 +98,10 @@ describe('buildModule suite', () => {
     test('test', () => {
       buildModule('foo', state)
 
+      const firstCall = mockBuildTypes.mock.calls[0]
+
+      expect(firstCall[0][0]).toEqual('foo')
       expect(mockBuildTypes.mock.calls.length).toBe(1)
     })
-  })
-
-  afterEach(() => {
-    if (mockHas) {
-      mockHas.mockClear()
-    }
-
-    if (mockBuildTypes) {
-      mockBuildTypes.mockClear()
-    }
-    state = {}
   })
 })
