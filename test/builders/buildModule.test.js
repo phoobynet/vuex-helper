@@ -8,7 +8,7 @@ jest.mock('../../src/builders/buildTypes')
 describe('buildModule suite', () => {
   let state, mockHas, mockAdd, mockBuildTypes
   beforeEach(() => {
-    mockBuildTypes = buildTypes.mockImplementation()
+    mockBuildTypes = buildTypes.mockImplementationOnce(buildTypes)
   })
 
   afterEach(() => {
@@ -84,24 +84,6 @@ describe('buildModule suite', () => {
       buildModule('foo', state)
       expect(mockAdd.mock.calls[0][0]).toEqual('foo')
       expect(mockAdd.mock.calls.length).toBe(1)
-    })
-  })
-
-  describe('buildModule should call buildTypes', () => {
-    beforeEach(() => {
-      mockHas = builtModules.has.mockReturnValue(false)
-      state = {
-        foo: null
-      }
-    })
-
-    test('test', () => {
-      buildModule('foo', state)
-
-      const firstCall = mockBuildTypes.mock.calls[0]
-
-      expect(firstCall[0][0]).toEqual('foo')
-      expect(mockBuildTypes.mock.calls.length).toBe(1)
     })
   })
 })
