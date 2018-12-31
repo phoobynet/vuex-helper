@@ -25,6 +25,7 @@ I built this as a time saver.  I was writing a Vue.js application for a large le
 ## Conventions (that I use)
 
 * Vuex modules are always namespaced.
+* I don't nest modules (nothing wrong with it, I just choose not to do it)
 * Vuex module file names end with `Module.js`, but module names don't, e.g. 'customersModule.js' is registered with the store as 'customers'
 * Vuex modules are kept smallish.
 * Each value of `state` has a matching `type`
@@ -99,6 +100,7 @@ export default store
 * `stateKeys` - array of keys obtained from the `state` objects.  Useful for creating mixins.
 * `defaultState` - copy of `state` that can be used to set a state property back to the original value.
 * `types` - object where each property and value matches a property of `state`.  Useful when using `commit`. An error is thrown if an attempt is made to access a property that does not exist.
+* `qualifiedTypes` - same as `types`, but each value is prefixed with the namespace.  This is useful for commits directly against a `store`
 * `mutations` - object where each function matches a property of `types` and therefore `state`.  When mapping mutations onto a component use the value of `mutationSettersMap`
 * `mutationSettersMap` - object where each property is prefixed with `set*` but the value matches a property of `types` and therefore `state`, e.g. `setFetching` maps to the `fetching` mutation function.  Very useful for avoiding collisions when mapping modules onto components.
 * `resetState` - function that takes the `context.commit` action vuex function to reset the module `state` back to `defaultState`.

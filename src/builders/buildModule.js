@@ -7,6 +7,7 @@ import builtModules from './builtModules'
 
 import isString from 'lodash/isString'
 import isObjectLike from 'lodash/isObjectLike'
+import buildQualifiedTypes from './buildQualifiedTypes'
 
 export default function buildModule (namespace, state) {
   if (!isString(namespace)) {
@@ -31,6 +32,7 @@ export default function buildModule (namespace, state) {
   const defaultState = { ...state }
   const namespaced = true
   const types = buildTypes(stateKeys)
+  const qualifiedTypes = buildQualifiedTypes(stateKeys, namespace)
   const mutations = buildMutations({ stateKeys, defaultState })
   const mutationSettersMap = buildMutationSettersMap(stateKeys)
   const resetState = buildStateResetter({ stateKeys, defaultState })
@@ -43,6 +45,7 @@ export default function buildModule (namespace, state) {
     stateKeys,
     defaultState,
     types,
+    qualifiedTypes,
     mutations,
     mutationSettersMap,
     resetState,
