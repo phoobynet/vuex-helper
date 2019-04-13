@@ -1,8 +1,8 @@
 {
   "name": "@phoobynet/vuex-helper",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Vuex helper for people who like namespaced modules",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "run-example-server": "node ./example/server/index.js",
     "run-example-client": "webpack-dev-server --hot --config ./example/webpack.config.js  --mode development",
@@ -25,6 +25,9 @@
     "email": "phoobynet@users.noreply.github.com"
   },
   "homepage": "https://github.com/phoobynet/vuex-helper#readme",
+  "files": [
+    "dist"
+  ],
   "jest": {
     "verbose": true
   },
