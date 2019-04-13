@@ -1,11 +1,12 @@
 {
   "name": "@phoobynet/vuex-helper",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Vuex helper for people who like namespaced modules",
   "main": "src/index.js",
   "scripts": {
     "run-example-server": "node ./example/server/index.js",
-    "run-example-client": "webpack-dev-server --hot --config ./example/webpack.config.js  --mode development"
+    "run-example-client": "webpack-dev-server --hot --config ./example/webpack.config.js  --mode development",
+    "build": "babel src --out-dir ./dist"
   },
   "repository": {
     "type": "git",
