@@ -1,6 +1,6 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const argv = require('yargs').argv
 
@@ -25,7 +25,7 @@ const webpackConfig = {
   resolve: {
     extensions: ['.js', '.vue'],
     alias: {
-      'vue$': argv.mode === 'production' ? 'vue/dist/vue.js' : 'vue/dist/vue.esm.js',
+      vue$: argv.mode === 'production' ? 'vue/dist/vue.js' : 'vue/dist/vue.esm.js',
       '@': path.resolve(__dirname, 'client')
     }
   },
@@ -68,12 +68,7 @@ const webpackConfig = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new CleanWebpackPlugin(['./dist'], {
-      root: __dirname,
-      exclude: ['.gitkeep'],
-      verbose: false,
-      dry: false
-    }),
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       title: 'Vue Seed - Change me',
       template: path.join(__dirname, 'client/index.html')
@@ -82,9 +77,9 @@ const webpackConfig = {
 }
 
 if (argv.mode !== 'production' && process.env.BABEL_ENV !== 'test') {
-  webpackConfig['devtool'] = 'inline-source-map'
-  webpackConfig['devServer'] = {
-    contentBase: path.join(__dirname, 'wwwroot'),
+  webpackConfig.devtool = 'inline-source-map'
+  webpackConfig.devServer = {
+    contentBase: path.join(__dirname, 'dist'),
     historyApiFallback: true,
     compress: true,
     port: 3001,
